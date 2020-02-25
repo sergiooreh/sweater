@@ -1,4 +1,4 @@
-<#macro page>
+<#macro page>               <#--Макрос-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,7 +6,7 @@
     <title>Title</title>
 </head>
 <body>
-<#nested>
+<#nested>                       <#--вложенный код-->
 </body>
 </html>
 </#macro>

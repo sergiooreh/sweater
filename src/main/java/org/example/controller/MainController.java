@@ -35,7 +35,7 @@ public class MainController {
 
     @PostMapping("/main")                                                                //без параметра -> в input без action
     public String add(
-            @AuthenticationPrincipal User user,
+            @AuthenticationPrincipal User user,                         //получаем ТЕКУЩЕГО пользователя в качестве параметра метода
             @RequestParam String text,
             @RequestParam String tag, Map<String,Object> model){        // @RequestParam means it is a parameter from the GET(если с URL) or POST(если с form(html)) request
         Message message = new Message(text, tag, user);

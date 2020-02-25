@@ -10,8 +10,9 @@ public class Message {
 
     private String text;
     private String tag;
+
     @ManyToOne(fetch = FetchType.EAGER)                                          //указываем каким образом должен сохранятся в БД. Связь. Одному author соотвествуют множество messages
-    @JoinColumn(name ="user_id")
+    @JoinColumn(name ="user_id")                                                //по умолчанию было б author_id
     private User author;
 
     public Message() {
