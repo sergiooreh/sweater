@@ -23,6 +23,10 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)                                                        //Enum хранить в виде String
     private Set<Role> roles;
 
+    public boolean isAdmin(){
+        return roles.contains(Role.ADMIN);
+    }
+
     public long getId() {
         return id;
     }
