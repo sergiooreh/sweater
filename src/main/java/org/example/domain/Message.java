@@ -15,6 +15,8 @@ public class Message {
     @JoinColumn(name ="user_id")                                                //по умолчанию было б author_id
     private User author;
 
+    private String filename;            //весь путь - в properties
+
     public Message() {
     }
     public Message(String text, String tag, User user){
@@ -56,5 +58,13 @@ public class Message {
 
     public void setAuthor(User author) {
         this.author = author;
+    }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
     }
 }

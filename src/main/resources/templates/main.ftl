@@ -5,9 +5,11 @@
 <@l.logout/>
         <span><a href="/user">User List</a> </span>
     </div>
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">      <#--Определяет способ кодирования данных формы при их отправке на сервер. Обычно устанавливать значение атрибута enctype не требуется, данные вполне правильно понимаются на стороне сервера.
+                                                            Однако если используется поле для отправки файла (input type="file"), следует определить атрибут enctype как multipart/form-data.-->
         <input type="text" name="text" placeholder="Enter Value">
         <input type="text" name="tag" placeholder="Enter tag">
+        <input type="file" name="file">
         <input type="hidden" name="_csrf" value="${_csrf.token}">
         <button type="submit">Add</button>
     </form>
@@ -25,6 +27,11 @@
             <span>${message.text}</span>
             <strong>${message.tag}</strong>
             <i>${message.authorName}</i>
+            <div>
+                <#if message.filename??>
+                    <img src="/img/${message.filename}">
+                </#if>
+            </div>
             <br/>
         </div>
         <#else>
