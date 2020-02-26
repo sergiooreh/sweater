@@ -24,7 +24,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()            //в нём создаем авторизацию
-                    .antMatchers("/","/registration","/static/**").permitAll()        //the/, /registration and /static resources paths are configured to not require any authentication.
+                    .antMatchers("/","/registration","/static/**","/activate/*").permitAll()        //the/, /registration and /static resources paths are configured to not require any authentication.
                     .anyRequest().authenticated()                                   // All other paths must be authenticated.
                 .and()
                     .formLogin()

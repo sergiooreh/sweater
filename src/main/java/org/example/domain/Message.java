@@ -5,20 +5,18 @@ import javax.persistence.*;
 @Entity
 public class Message {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)         //AUTO - по умолчанию. Можно не ставить
     private Integer id;
 
     private String text;
     private String tag;
+    private String filename;            //весь путь - в properties
 
-    @ManyToOne(fetch = FetchType.EAGER)                                          //указываем каким образом должен сохранятся в БД. Связь. Одному author соотвествуют множество messages
+    @ManyToOne(fetch = FetchType.EAGER)                                          // Связь. Одному author соотвествуют множество messages
     @JoinColumn(name ="user_id")                                                //по умолчанию было б author_id
     private User author;
 
-    private String filename;            //весь путь - в properties
-
-    public Message() {
-    }
+    public Message() {}
     public Message(String text, String tag, User user){
         this.author = user;
         this.text = text;
@@ -60,11 +58,7 @@ public class Message {
         this.author = author;
     }
 
-    public String getFilename() {
-        return filename;
-    }
+    public String getFilename() { return filename; }
 
-    public void setFilename(String filename) {
-        this.filename = filename;
-    }
+    public void setFilename(String filename) { this.filename = filename; }
 }

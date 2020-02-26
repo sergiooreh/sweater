@@ -16,6 +16,9 @@ public class User implements UserDetails {
     private String username;
     private String password;
     private boolean active;
+    private String email;
+    private String activationCode;
+
 
     //LAZY - подгрузит когда User обратится к полю(хорошо когда много данных) EAGER - при запросе User будет подгружать(хорошо когда мало данных)
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)                //формирует новую таблицу для хранения enum. Fetch - как данные будут подгружатся относительно основной сущности
@@ -23,9 +26,7 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)                                                        //Enum хранить в виде String
     private Set<Role> roles;
 
-    public boolean isAdmin(){
-        return roles.contains(Role.ADMIN);
-    }
+    public boolean isAdmin(){ return roles.contains(Role.ADMIN); }
 
     public long getId() {
         return id;
@@ -90,5 +91,21 @@ public class User implements UserDetails {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getActivationCode() {
+        return activationCode;
+    }
+
+    public void setActivationCode(String activationCode) {
+        this.activationCode = activationCode;
     }
 }
