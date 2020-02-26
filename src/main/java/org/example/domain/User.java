@@ -12,7 +12,7 @@ import java.util.Set;
 public class User implements UserDetails {
     @Id
     @GeneratedValue
-    private long id;
+    private Integer id;
     private String username;
     private String password;
     private boolean active;
@@ -28,11 +28,11 @@ public class User implements UserDetails {
 
     public boolean isAdmin(){ return roles.contains(Role.ADMIN); }
 
-    public long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
