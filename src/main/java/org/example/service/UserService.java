@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -22,9 +23,16 @@ public class UserService implements UserDetailsService {    //UserDetailsService
     @Autowired
     private MailSender mailSender;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {   //It is used by the DaoAuthenticationProvider to load details about the user during authentication.
-        return userRepo.findByUsername(username);
+        User user = userRepo.findByUsername(username);
+        if ( user ==null){
+            throw new UsernameNotFoundException("User not found");                          //появляется если не указали email и password при входе
+        }
+        return user;
     }
     public boolean addUser(User user){
         User userFromDB = userRepo.findByUsername(user.getUsername());
@@ -35,6 +43,7 @@ public class UserService implements UserDetailsService {    //UserDetailsService
         user.setActive(false);
         user.setRoles(Collections.singleton(Role.USER));        //создает Set с одним единственным значением
         user.setActivationCode(UUID.randomUUID().toString());
+        user.setPassword(passwordEncoder.encode(user.getPassword()));           //зашифровуем пароль
 
         userRepo.save(user);
 
@@ -96,7 +105,7 @@ public class UserService implements UserDetailsService {    //UserDetailsService
             }
         }
         if (!StringUtils.isEmpty(password)){
-            user.setPassword(password);
+            user.setPassword(passwordEncoder.encode(password));
         }
         userRepo.save(user);
 
