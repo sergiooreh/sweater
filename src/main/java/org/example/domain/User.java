@@ -20,8 +20,8 @@ public class User implements UserDetails {
     @NotBlank(message = "Password cannot be empty")
     private String password;
 
-    @Transient                                                                          // indicate that a field is not to be persisted or ignore fields to save in the database
-    private String password2;                                                           //password validation
+  //  @Transient                                                                          // indicate that a field is not to be persisted or ignore fields to save in the database
+   // private String password2;                                                           //password validation
     private boolean active;
 
     @Email(message = "Email is not correct")                                            //Validation
@@ -119,11 +119,4 @@ public class User implements UserDetails {
         this.activationCode = activationCode;
     }
 
-    public String getPassword2() {
-        return password2;
-    }
-
-    public void setPassword2(String password2) {
-        this.password2 = password2;
-    }
 }
