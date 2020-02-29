@@ -7,10 +7,12 @@ known = Session.SPRING_SECURITY_CONTEXT??           <#--??- приводим к 
     user = Session.SPRING_SECURITY_CONTEXT.authentication.principal         <#--получить user-->
     name = user.getUsername()
     isAdmin = user.isAdmin()
+        currentUserId = user.getId()
     >
-<#else>             <#--если нет-->
+<#else>             <#--для не авторизованных пользователей-->
     <#assign
     name = "unknown"
     isAdmin = false
+    currentUserId = -1
     >
 </#if>

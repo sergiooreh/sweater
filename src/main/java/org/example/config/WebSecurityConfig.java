@@ -42,7 +42,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .loginPage("/login")
                     .permitAll()
                 .and()
-                    .rememberMe()
+                    .rememberMe()       //когда сессия expires (? 30 min), то Спринг будет искать вас повторно(все сессии хранит в БД)
                 .and()
                      .logout()
                     .permitAll();
