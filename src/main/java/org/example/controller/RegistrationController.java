@@ -34,7 +34,7 @@ public class RegistrationController {
     private RestTemplate restTemplate;
 
     @GetMapping("/registration")
-    public String registration(){
+    public String registration() {
         return "registration";
     }
 
@@ -44,29 +44,29 @@ public class RegistrationController {
             @RequestParam("g-recaptcha-response") String captchaResponse,
             @Valid User user,
             BindingResult bindingResult,
-            Model model){
+            Model model) {
         String url = String.format(CAPTCHA_URL, secret, captchaResponse);       // CAPTCHA_URL !!!
         CaptchaResponseDto response = restTemplate.postForObject(url, Collections.emptyList(), CaptchaResponseDto.class);   //передаем на сервер
-        if (!response.isSuccess()){
+        if (!response.isSuccess()) {
             model.addAttribute("captchaError", "Fill captcha");
         }
 
         boolean isConfirmEmpty = StringUtils.isEmpty(passwordConfirm);
 
-        if (isConfirmEmpty){
+        if (isConfirmEmpty) {
             model.addAttribute("password2Error", "Password confirmation can't be empty");
         }
 
-        if (user.getPassword() != null && !user.getPassword().equals(passwordConfirm)){                     //password1 != password2
+        if (user.getPassword() != null && !user.getPassword().equals(passwordConfirm)) {                     //password1 != password2
             model.addAttribute("passwordError", "Passwords are different!");
         }
-        if (isConfirmEmpty || bindingResult.hasErrors() || !response.isSuccess()){
+        if (isConfirmEmpty || bindingResult.hasErrors() || !response.isSuccess()) {
             Map<String, String> errors = ControllerUtils.getErrors(bindingResult);
             model.mergeAttributes(errors);
 
             return "registration";
         }
-        if (!userService.addUser(user)){                                //если не могли добавить user
+        if (!userService.addUser(user)) {                                //если не могли добавить user
             model.addAttribute("usernameError", "User exists!");
 
             return "registration";
@@ -76,14 +76,14 @@ public class RegistrationController {
     }
 
     @GetMapping("/activate/{code}")
-    public String activate(Model model, @PathVariable String code){
+    public String activate(Model model, @PathVariable String code) {
         boolean isActivated = userService.activateUser(code);
-        if (isActivated){
-            model.addAttribute("messageType","success");
-            model.addAttribute("message","User successfully activated");
+        if (isActivated) {
+            model.addAttribute("messageType", "success");
+            model.addAttribute("message", "User successfully activated");
         } else {
-            model.addAttribute("messageType","danger");
-            model.addAttribute("message","Activation code is not found");
+            model.addAttribute("messageType", "danger");
+            model.addAttribute("message", "Activation code is not found");
         }
         return "login";
     }

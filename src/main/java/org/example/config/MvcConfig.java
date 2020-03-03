@@ -14,7 +14,7 @@ public class MvcConfig implements WebMvcConfigurer {                            
     private String uploadPath;
 
     @Bean
-    public RestTemplate getRestTemplate(){
+    public RestTemplate getRestTemplate() {
         return new RestTemplate();
     }
 
@@ -26,11 +26,11 @@ public class MvcConfig implements WebMvcConfigurer {                            
                                         /*Stores registrations of resource handlers for serving static resources such as images, css files and others through Spring
                                         MVC including setting cache headers optimized for efficient loading in a web browser.*/
 
-        @Override
-        public void addResourceHandlers(ResourceHandlerRegistry registry) {
-            registry.addResourceHandler("/img/**")          //все запросы (на сервере) по пути img...
-                    .addResourceLocations("file:///"+uploadPath+"/");       //будут перенаправлять по пути на комп (какие img нам показывать)
-            registry.addResourceHandler("/static/**")
-                    .addResourceLocations("classpath:/static/");                         //от корня проекта
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/img/**")          //все запросы (на сервере) по пути img...
+                .addResourceLocations("file:///" + uploadPath + "/");       //будут перенаправлять по пути на комп (какие img нам показывать)
+        registry.addResourceHandler("/static/**")
+                .addResourceLocations("classpath:/static/");                         //от корня проекта
     }
 }

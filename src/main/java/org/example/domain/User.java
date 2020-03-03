@@ -7,6 +7,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -21,8 +22,8 @@ public class User implements UserDetails {
     @NotBlank(message = "Password cannot be empty")
     private String password;
 
-  //  @Transient                                                                          // indicate that a field is not to be persisted or ignore fields to save in the database
-   // private String password2;                                                           //password validation
+    //  @Transient                                                                          // indicate that a field is not to be persisted or ignore fields to save in the database
+    // private String password2;                                                           //password validation
     private boolean active;
 
     @Email(message = "Email is not correct")                                            //Validation
@@ -32,13 +33,32 @@ public class User implements UserDetails {
 
 
     //LAZY - подгрузит когда User обратится к полю(хорошо когда много данных) EAGER - при запросе User будет подгружать(хорошо когда мало данных)
-    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)                //формирует новую таблицу для хранения enum. Fetch - как данные будут подгружатся относительно основной сущности
-    @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))   //создаёт отдельную таблицу для даного поля(Role),для которой мы не описывали mapping
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
+    //формирует новую таблицу для хранения enum. Fetch - как данные будут подгружатся относительно основной сущности
+    @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
+    //создаёт отдельную таблицу для даного поля(Role),для которой мы не описывали mapping
     @Enumerated(EnumType.STRING)                                                        //Enum хранить в виде String
     private Set<Role> roles;
 
-    @OneToMany(mappedBy = "author",cascade = CascadeType.ALL, fetch = FetchType.LAZY)          //обратная сторона связи @ManyToOne в Messages. Будем получать все сообщения созданные userom
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    //обратная сторона связи @ManyToOne в Messages. Будем получать все сообщения созданные userom
     private Set<Message> messages;
+
+    @ManyToMany
+    @JoinTable(                                                         //Create table between two tables(for many to many)
+            name = "user_subscriptions",
+            joinColumns = {@JoinColumn(name = "channel_id")},
+            inverseJoinColumns = {@JoinColumn(name = "subscriber_id")}
+    )
+    private Set<User> subscribers = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(                                                         //Create table between two tables(for many to many)
+            name = "user_subscriptions",
+            joinColumns = {@JoinColumn(name = "subscriber_id")},
+            inverseJoinColumns = {@JoinColumn(name = "channel_id")}
+    )
+    private Set<User> subscriptions = new HashSet<>();
 
     @Override
     public boolean equals(Object o) {
@@ -53,7 +73,9 @@ public class User implements UserDetails {
         return Objects.hash(id);
     }
 
-    public boolean isAdmin(){ return roles.contains(Role.ADMIN); }
+    public boolean isAdmin() {
+        return roles.contains(Role.ADMIN);
+    }
 
     public Integer getId() {
         return id;
@@ -142,5 +164,21 @@ public class User implements UserDetails {
 
     public void setMessages(Set<Message> messages) {
         this.messages = messages;
+    }
+
+    public Set<User> getSubscribers() {
+        return subscribers;
+    }
+
+    public void setSubscribers(Set<User> subscribers) {
+        this.subscribers = subscribers;
+    }
+
+    public Set<User> getSubscriptions() {
+        return subscriptions;
+    }
+
+    public void setSubscriptions(Set<User> subscriptions) {
+        this.subscriptions = subscriptions;
     }
 }

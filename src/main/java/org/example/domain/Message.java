@@ -18,20 +18,24 @@ public class Message {
     private String tag;
     private String filename;            //весь путь - в properties
 
-    @ManyToOne(fetch = FetchType.EAGER)                                          // Связь. Одному author соотвествуют множество messages
-    @JoinColumn(name ="user_id")                                                //по умолчанию было б author_id
+    @ManyToOne(fetch = FetchType.EAGER)
+    // Связь. Одному author соотвествуют множество messages
+    @JoinColumn(name = "user_id")                                                //по умолчанию было б author_id
     private User author;
 
-    public Message() {}
-    public Message(String text, String tag, User user){
+    public Message() {
+    }
+
+    public Message(String text, String tag, User user) {
         this.author = user;
         this.text = text;
         this.tag = tag;
     }
 
     public String getAuthorName() {                   //Это закидоны из groovy. Всё методы getSomething могут быть заменены на обращение к полю (даже если оно не существует) с именем something
-        return author!=null ? author.getUsername() : "none";
+        return author != null ? author.getUsername() : "none";
     }
+
     public Integer getId() {
         return id;
     }
@@ -64,7 +68,11 @@ public class Message {
         this.author = author;
     }
 
-    public String getFilename() { return filename; }
+    public String getFilename() {
+        return filename;
+    }
 
-    public void setFilename(String filename) { this.filename = filename; }
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
 }

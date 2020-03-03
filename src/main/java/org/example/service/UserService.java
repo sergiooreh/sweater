@@ -15,7 +15,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 //all business logic must be here, not in controller
-@Service                                
+@Service
 public class UserService implements UserDetailsService {    //UserDetailsService interface is used to retrieve user-related data.
     @Autowired
     private UserRepo userRepo;
@@ -29,15 +29,16 @@ public class UserService implements UserDetailsService {    //UserDetailsService
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {   //It is used by the DaoAuthenticationProvider to load details about the user during authentication.
         User user = userRepo.findByUsername(username);
-        if ( user ==null){
+        if (user == null) {
             throw new UsernameNotFoundException("User not found");                          //появляется если не указали email и password при входе
         }
         return user;
     }
-    public boolean addUser(User user){
+
+    public boolean addUser(User user) {
         User userFromDB = userRepo.findByUsername(user.getUsername());
 
-        if (userFromDB!=null){
+        if (userFromDB != null) {
             return false;                                                               //user wasn't added
         }
         user.setActive(false);
@@ -52,20 +53,20 @@ public class UserService implements UserDetailsService {    //UserDetailsService
     }
 
     private void sendMessage(User user) {
-        if (!StringUtils.isEmpty(user.getEmail())){
+        if (!StringUtils.isEmpty(user.getEmail())) {
             String message = String.format(
-                    "Hello, %s! \n"+
+                    "Hello, %s! \n" +
                             "Welcome to Sweater. Please, confirm your registration by visiting this link: " + "http://localhost:8080/activate/%s",
                     user.getUsername(),
                     user.getActivationCode()
             );
-            mailSender.send(user.getEmail(),"ActivationCode", message);
+            mailSender.send(user.getEmail(), "ActivationCode", message);
         }
     }
 
     public boolean activateUser(String code) {
         User user = userRepo.findByActivationCode(code);
-        if (user == null){
+        if (user == null) {
             return false;
         }
         user.setActivationCode(null);
@@ -96,22 +97,32 @@ public class UserService implements UserDetailsService {    //UserDetailsService
 
     public void updateProfile(User user, String password, String email) {
         String userEmail = user.getEmail();
-        boolean isEmailChanged = (email!=null && !email.equals(userEmail)) || (userEmail!=null && !userEmail.equals(email));                               //изменился ли email usera
-        if (isEmailChanged){
+        boolean isEmailChanged = (email != null && !email.equals(userEmail)) || (userEmail != null && !userEmail.equals(email));                               //изменился ли email usera
+        if (isEmailChanged) {
             user.setEmail(email);
 
-            if (!StringUtils.isEmpty(email)){
+            if (!StringUtils.isEmpty(email)) {
                 user.setActivationCode(UUID.randomUUID().toString());
             }
         }
-        if (!StringUtils.isEmpty(password)){
+        if (!StringUtils.isEmpty(password)) {
             user.setPassword(passwordEncoder.encode(password));
         }
         userRepo.save(user);
 
-        if (isEmailChanged){
+        if (isEmailChanged) {
             sendMessage(user);
         }
 
+    }
+
+    public void subscribe(User currentUser, User user) {
+        user.getSubscribers().add(currentUser);
+        userRepo.save(user);
+    }
+
+    public void unsubscribe(User currentUser, User user) {
+        user.getSubscribers().remove(currentUser);
+        userRepo.save(user);
     }
 }
